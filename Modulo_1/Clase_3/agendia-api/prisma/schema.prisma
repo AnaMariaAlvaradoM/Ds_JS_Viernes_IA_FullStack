@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Servicio {
+  id          Int     @id @default(autoincrement())
+  nombre      String
+  descripcion String?
+  duracionMin Int
+  precio      Int
+  activo      Boolean @default(true)
+  citas       Cita[]
+}
+
+enum EstadoCita {
+  PENDIENTE
+  CONFIRMADA
+  CANCELADA
+  COMPLETADA
+}
+
+model Cita {
+  id              Int        @id @default(autoincrement())
+  clienteNombre   String
+  clienteTelefono String
+  profesional     String
+  fechaHora       DateTime
+  estado          EstadoCita @default(PENDIENTE)
+  notas           String?
+  servicioId      Int
+  servicio        Servicio   @relation(fields: [servicioId], references: [id])
+}
